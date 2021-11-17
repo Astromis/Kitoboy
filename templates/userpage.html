@@ -1,0 +1,43 @@
+<title>Kitoboy</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<h1>Китобой</h1>
+
+<h2>Общая информация</h2>
+
+<table>
+    <tr><td>Никнейм</td><td>{{ stats["nickname"] }}</td> </tr>
+    <tr><td>Количество постов</td><td>{{ stats["all_posts"] }}</td> </tr>
+    <tr><td>Количество позитивных постов</td><td>{{ stats["pos_posts"] }}</td> </tr>  
+    <tr><td>Количество негативных постов</td><td>{{ stats["neg_posts"] }}</td> </tr>
+    <tr><td>Коэффициент настроения</td><td>{{ stats["emotion_coef"] }}</td> </tr>
+    <tr><td>Начало активности</td><td>{{ stats["erlier_post"] }}</td> </tr>
+    <tr><td>Процент репостов</td><td>{{ stats["persentage_of_retweets"] }}</td> </tr>
+
+  </table>
+<!--
+<hr>
+ 
+    <img src="{{ sentiment_dynamic}}" alt="sentiment_dynamic">
+<hr>
+-->
+<h2>Негативные посты</h2>
+{% for neg in neg_text %}
+    <ul>
+        <li>{{neg}}</li>
+    </ul>
+  {% endfor %}
+<hr>
+<h2>Позитивные посты</h2>
+{% for pos in pos_text %}
+    <ul>
+        <li>{{pos}}</li>
+    </ul>
+  {% endfor %}
+<hr>
+<h2>Другая информация</h2>
+{% for pos in other_data %}
+    <ul>
+        <li>{{pos}}</li>
+    </ul>
+  {% endfor %}
+<hr>

@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% for key, value in dict_item.items() %}
+  {% set list1 = key.split('_') %}
+    <h1>{{list1[0]}}, {{len[key]}}</h1>
+    {% for text in value %}
+    <br>{{text}}</br>
+    {% endfor %}
+  {% endfor %}
+{% endblock %}
+
