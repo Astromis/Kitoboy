@@ -5,6 +5,9 @@ import os
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
 from werkzeug.utils import secure_filename
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileRequired
+
 
 from flask import send_from_directory
 
@@ -12,62 +15,63 @@ import pandas as pd
 import pymorphy2
 import json
 from pathlib import Path
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 from utils import get_sentiments
 from utils import get_sentiment_dynamic
 from utils import get_common_stats
 from utils import extract_data
 from twitter_scrapper import get_tweeter_user
+#from models import User
 
 # configuration
-DATABASE = '/tmp/flaskr.db'
-DEBUG = True
-SECRET_KEY = 'development key'
-USERNAME = 'admin'
-PASSWORD = 'default'
-UPLOAD_FOLDER = '/tmp/'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json'])
+from config import Config
 
 
 OUTER_STATS = {}
 
 app = Flask(__name__)
-app.config.from_object(__name__)
+app.config.from_object(Config)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
-app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+#app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+#app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+class Users(db.Model):
+    id = db.Column(db.Integer(), primary_key=True, unique=True)
+    user_id = db.Column(db.Text(), index=True, unique=True)
+    socnet_name = db.Column(db.Text(), index=True)
+    is_collected = db.Column(db.Boolean(), default=False)
+    suicide_rating = db.Column(db.Integer())
+    posts = db.relationship('Posts', backref='author', lazy='dynamic')
+
+    def __repr__(self):
+        return '<User {}>'.format(self.user_id)
+
+
+class Posts(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Text(), db.ForeignKey('users.user_id'))
+    text = db.Column(db.Text(), index=True)
+    is_retweeted = db.Column(db.Boolean())
+    date = db.Column(db.Text())
+    annotation = db.Column(db.Integer())
+
+    def __repr__(self):
+        return '<Post {}>'.format(self.id)
+
+
+class PhotoForm(FlaskForm):
+    file = FileField(validators=[FileRequired()])
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-""" 
-@app.route('/', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
-    else:
-        return '''
-        <!doctype html>
-        <title>Upload new File</title>
-        <h1>Upload new File</h1>
-        <form action="" method=post enctype=multipart/form-data>
-        <p><input type=file name=file>
-            <input type=submit value=Upload>
-        </form>
-        ''' """
-
-
-
-
-
+           filename.rsplit('.', 1)[1] in Config.ALLOWED_EXTENSIONS
     
-@app.route('/', methods=['GET', 'POST'])
+""" @app.route('/', methods=['GET', 'POST'])
 def get_link():
     if request.method == 'POST':
         df = get_tweeter_user(request.form["user_url"])
@@ -87,7 +91,40 @@ def get_link():
         return render_template("userpage.html", sentiment_dynamic = Path("static/img/test.png"), neg_text=neg_text, pos_text=pos_text, stats=stats, other_data=other_data) 
 
     else:
-        return '''
+        return render_template('main.html') """
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    form = PhotoForm()
+    if form.validate_on_submit():
+        f = form.file.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(
+            'data', filename
+        ))
+        df = pd.read_csv(f"data/{filename}", sep='|')
+        for i, r in df.iterrows():
+            new_user = Users(id=1, user_id=r.link.split("/")[-1], socnet_name="Twitter", suicide_rating=r.label)
+            db.session.add(new_user)
+        db.session.commit()
+
+    return render_template("index.html",form=form)
+
+@app.route("/users/")
+def users():
+        users = Users.query.filter_by(socnet_name='Twitter').all()
+        return render_template('show_users.html', users_list=users)
+
+@app.route("/user_posts/<user>")
+def user_posts(user):
+    posts = Posts.query.filter_by(user_id=user).all()
+    return render_template('show_posts.html', post_list=posts)
+
+    
+if __name__ == '__main__':
+    app.run(host="localhost", port=8000, debug=Config.DEBUG)
+
+'''
         <!doctype html>
         <title>Китобой</title>
         <h1>Введите Twitter ссылку</h1>
@@ -96,51 +133,3 @@ def get_link():
             <input type=submit value=Upload>
         </form>
         '''
-
-
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    data = json.load(open(os.path.join(app.config['UPLOAD_FOLDER'], filename)))
-    total_len = sum([len(x) for x in list(data.values())])
-    length = {x:len(y)/total_len for x,y in data.items()}
-    filtered = {x:extract_data(y) for x,y in data.items()}
-    return render_template('show_entries.html', dict_item=filtered, len=length)
-    #return send_from_directory(app.config['UPLOAD_FOLDER'],
-    #                           filename)
-
-""" @app.route('/add', methods=['POST'])
-def add_entry():
-    if not session.get('logged_in'):
-        abort(401)
-    g.db.execute('insert into entries (title, text) values (?, ?)',
-                 [request.form['title'], request.form['text']])
-    g.db.commit()
-    flash('New entry was successfully posted')
-    return redirect(url_for('show_entries'))
-    
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('show_entries'))
-    return render_template('login.html', error=error)
-    
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
-    return redirect(url_for('show_entries'))
-
-    
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE']) """
-    
-if __name__ == '__main__':
-    app.run(host="localhost", port=8000, debug=DEBUG)

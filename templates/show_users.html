@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+<table>
+    <tr>
+      <th>Ссылка пользователя</th>
+      <th>Суицидальный рейтинг</th>
+      <th>Посты</th>
+    </tr>
+  {% for user in users_list %}
+  <tr>
+    <td>{{user.user_id}}</td>
+    <td>{{user.suicide_rating}}</td>
+    <td><a href="{{ url_for('user_posts', user=user.id) }}">Посты</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
+

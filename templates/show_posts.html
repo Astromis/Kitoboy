@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block body %}
+<table>
+    <tr>
+      <th>Текст поста</th>
+      <th>Классификация</th>
+    </tr>
+  {% for post in post_list %}
+  <tr>
+    <td>{{post.text}}</td>
+    <td>{{post.annotation}}</td>
+  </tr>
+
+  {% endfor %}
+</table>
+{% endblock %}
+
