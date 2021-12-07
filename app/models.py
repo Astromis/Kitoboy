@@ -1,4 +1,4 @@
-from main import db
+from app import db
 
 class User(db.Model):
     id = db.Column(db.Integer(), primary_key=True, unique=True)
@@ -13,7 +13,7 @@ class User(db.Model):
 
 class Post(db.Model):
     id = db.Column(db.Integer(), primary_key=True, unique=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     text = db.Column(db.Text(), index=True)
     is_retweeted = db.Column(db.Boolean())
     datetime = db.Column(db.DateTime())

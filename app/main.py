@@ -18,51 +18,18 @@ from pathlib import Path
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-from utils import get_sentiments
-from utils import get_sentiment_dynamic
-from utils import get_common_stats
-from utils import extract_data
-from twitter_scrapper import get_tweeter_user
-#from models import User
+from .utils import get_sentiments
+from .utils import get_sentiment_dynamic
+from .utils import get_common_stats
+from .utils import extract_data
+from .twitter_scrapper import get_tweeter_user
+from app import app
 
 # configuration
 from config import Config
 
 
 OUTER_STATS = {}
-
-app = Flask(__name__)
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-
-#app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-#app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-#app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-
-class Users(db.Model):
-    id = db.Column(db.Integer(), primary_key=True, unique=True)
-    user_id = db.Column(db.Text(), index=True, unique=True)
-    socnet_name = db.Column(db.Text(), index=True)
-    is_collected = db.Column(db.Boolean(), default=False)
-    suicide_rating = db.Column(db.Integer())
-    posts = db.relationship('Posts', backref='author', lazy='dynamic')
-
-    def __repr__(self):
-        return '<User {}>'.format(self.user_id)
-
-
-class Posts(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Text(), db.ForeignKey('users.user_id'))
-    text = db.Column(db.Text(), index=True)
-    is_retweeted = db.Column(db.Boolean())
-    date = db.Column(db.Text())
-    annotation = db.Column(db.Integer())
-
-    def __repr__(self):
-        return '<Post {}>'.format(self.id)
-
 
 class PhotoForm(FlaskForm):
     file = FileField(validators=[FileRequired()])
