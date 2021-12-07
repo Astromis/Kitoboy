@@ -14,8 +14,8 @@ regex = [ ("[OLD]" ,re.compile(r"мне ([6-9])|([0-9]{2,2}) (лет|год)?") 
            ("[BANK]", re.compile(r"([0-9]{4,4}[ ]?){4,4}")),
            ("[TELE]", re.compile(r"^((\+?[0-9]{1,3})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$"))]
 
-towns = pd.read_csv("/home/astromis/Datasets and corpuses/Словари/russian_town_list.csv", sep="|", header=None)
-with open("/home/astromis/Datasets and corpuses/Словари/russian_names_dict.txt") as f:
+towns = pd.read_csv("data/russian_town_list.csv", sep="|", header=None)
+with open("data/russian_names_dict.txt") as f:
     names = f.read().lower().split() 
 
 
