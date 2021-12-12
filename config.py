@@ -6,10 +6,10 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'siniy_kit.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    #DATABASE = '/tmp/flaskr.db'
     DEBUG = True
     SECRET_KEY = 'development key'
     USERNAME = 'admin'
     PASSWORD = 'default'
     UPLOAD_FOLDER = '/tmp/'
     ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json'])
+    POSTS_PER_PAGE = 10

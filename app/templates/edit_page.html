@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<form method="post" action="{{ url_for('edit') }}">
+    {{ form.id(value=user.id) }}
+    {{ form.status(selected=2) }} 
+    {{ form.submit() }} 
+</form>
+
+{% endblock %}

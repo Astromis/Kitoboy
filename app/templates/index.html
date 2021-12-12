@@ -6,5 +6,14 @@
     {{ form.file }}
     <input type="submit">
 </form>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+        <li><span style="color: red;">{{ message }}</span></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
 {% endblock %}
 

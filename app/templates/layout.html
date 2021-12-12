@@ -3,8 +3,11 @@
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <div class=page>
   <h1>Kitoboy</h1>
-  {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
-  {% endfor %}
+  <tr>
+    <th><a href="{{ url_for('index')}}">Главная</a></th>
+    <th></th>
+    <th></th>
+  </tr>
+  <hr>
   {% block body %}{% endblock %}
 </div>

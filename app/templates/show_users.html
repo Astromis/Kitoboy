@@ -1,18 +1,30 @@
 {% extends "layout.html" %}
 {% block body %}
+{% if prev_url %}
+    <a href="{{ prev_url }}">Newer posts</a>
+    {% endif %}
+    {% if next_url %}
+    <a href="{{ next_url }}">Older posts</a>
+{% endif %}
+<br>
 <table>
     <tr>
       <th>Ссылка пользователя</th>
       <th>Суицидальный рейтинг</th>
       <th>Посты</th>
     </tr>
+  <form action="{{ url_for('edit') }}" method=get>
   {% for user in users_list %}
   <tr>
-    <td>{{user.user_id}}</td>
-    <td>{{user.suicide_rating}}</td>
+    <td><input type="radio" name="id" value="{{user.id}}"></td>
+    <td>{{user.user_account}}</td>
+    <td>{{rating_map[user.suicide_rating]}}</td>
     <td><a href="{{ url_for('user_posts', user=user.id) }}">Посты</a></td>
   </tr>
   {% endfor %}
+  <input type="submit" value="Изменить">
+  </form>
 </table>
+
 {% endblock %}
 

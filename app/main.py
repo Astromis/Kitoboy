@@ -1,38 +1,40 @@
 # all the imports
-import sqlite3
 import os
 
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
 from werkzeug.utils import secure_filename
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired
-
-
-from flask import send_from_directory
+from flask_wtf.file import FileField, FileRequired#, 
+from wtforms import SelectField, HiddenField, SubmitField, IntegerField
 
 import pandas as pd
-import pymorphy2
-import json
 from pathlib import Path
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 
-from .utils import get_sentiments
+#from wtforms.fields.simple import 
+
+""" from .utils import get_sentiments
 from .utils import get_sentiment_dynamic
 from .utils import get_common_stats
 from .utils import extract_data
-from .twitter_scrapper import get_tweeter_user
-from app import app
+from .twitter_scrapper import get_tweeter_user """
+from app import app, db
+from app.models import User
 
 # configuration
 from config import Config
-
+SUICIDAL_RATING = [(0, "Normal"), (1, "Sus"), (2, "High")]
 
 OUTER_STATS = {}
 
 class PhotoForm(FlaskForm):
     file = FileField(validators=[FileRequired()])
+
+class StatusForm(FlaskForm):
+    id = HiddenField("id")
+    status = SelectField("status", choices=SUICIDAL_RATING)
+    submit = SubmitField('Update Record')
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -70,8 +72,11 @@ def index():
             'data', filename
         ))
         df = pd.read_csv(f"data/{filename}", sep='|')
+        if "link" not in df.columns  or "label" not in df.columns: #or "link" not in df.columns
+            flash('Ivalid column format of file.')
+            redirect(url_for('index'))
         for i, r in df.iterrows():
-            new_user = Users(id=1, user_id=r.link.split("/")[-1], socnet_name="Twitter", suicide_rating=r.label)
+            new_user = User(user_account=r.link.split("/")[-1].strip(), socnet_name="Twitter", suicide_rating=r.label)
             db.session.add(new_user)
         db.session.commit()
 
@@ -79,24 +84,35 @@ def index():
 
 @app.route("/users/")
 def users():
-        users = Users.query.filter_by(socnet_name='Twitter').all()
-        return render_template('show_users.html', users_list=users)
+    page = request.args.get('page', 1, type=int)
+    users = User.query.filter_by(socnet_name='Twitter').paginate(
+        page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('users', page=users.next_num) \
+        if users.has_next else None
+    prev_url = url_for('users', page=users.prev_num) \
+        if users.has_prev else None
+    return render_template('show_users.html', users_list=users.items, rating_map=dict(SUICIDAL_RATING), next_url=next_url, prev_url=prev_url)
+
+@app.route("/edit", methods=['GET', 'POST'])
+def edit():
+    # I'm not sure that this trick with id is a good solution
+    id = request.args.get('id')
+    status_form = StatusForm()
+    user = User.query.filter(User.id == id).first()
+    if status_form.is_submitted():
+        user = User.query.filter(User.id == status_form.id.data).first()
+        user.suicide_rating = status_form.status.data
+        db.session.commit()
+        return redirect(url_for("users"))
+    return render_template("edit_page.html",form=status_form, user=user, choices=SUICIDAL_RATING)
+
 
 @app.route("/user_posts/<user>")
 def user_posts(user):
-    posts = Posts.query.filter_by(user_id=user).all()
+    posts = Post.query.filter_by(user_id=user).all()
     return render_template('show_posts.html', post_list=posts)
 
     
 if __name__ == '__main__':
     app.run(host="localhost", port=8000, debug=Config.DEBUG)
 
-'''
-        <!doctype html>
-        <title>Китобой</title>
-        <h1>Введите Twitter ссылку</h1>
-        <form action="" method=post >
-        <p><input type=text name=user_url>
-            <input type=submit value=Upload>
-        </form>
-        '''
