@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block body %}
+<form method="post" enctype="multipart/form-data">
+    <p>{{ form.hidden_tag() }} </p>
+    <p>Имя: {{ form.first_name }}</p>
+    <p>Фамилия: {{ form.last_name }}</p>
+    <p>Отчество: {{ form.middle_name }}</p>
+    <p>Полных лет: {{ form.age }}</p>
+    <p>Страна: {{ form.from_country }}</p>
+    <p>Уровень образования:{{ form.study_level }}</p>
+    <p>Статус: {{ form.status }}</p>
+    <p><input type="submit">
+</form>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+        <li><span style="color: red;">{{ message }}</span></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+{% endblock %}
+

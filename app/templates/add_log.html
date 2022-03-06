@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
-<p>You can <a href="{{ url_for('add_record') }}">Добавить нового пользователя</a>.</p>
 <form method="post" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
-    {{ form.file }}
-    <input type="submit">
+    {{form.id_real(value=id)}}
+    <p>{{ form.hidden_tag() }} </p>
+    <p>Текст лога: {{ form.log_text }}</p>
+    <p><input type="submit">
 </form>
 {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -15,11 +15,5 @@
         </ul>
     {% endif %}
 {% endwith %}
-
-{% for user in users %}
-    <ul>
-        <li><a href="{{ url_for('view_record', user=user.id, level='general') }}">{{user.firs_name}} {{user.last_name}}</a></li>
-    </ul>
-  {% endfor %}
 {% endblock %}
 

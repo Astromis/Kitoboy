@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block body %}
+<tr>
+    <th><a href="{{ url_for('view_record', user=user.id, level='general')}}">Общая информация</a></th>
+    <th><a href="{{ url_for('view_record', user=user.id, level='socnets')}}">Социальные сети</a></th>
+    <th><a href="{{ url_for('view_record', user=user.id, level='logs')}}">Волонтерский лог</a></th>
+    <th></th>
+</tr>
+{%if level=="general"%}
+    <p>Имя: {{ user.first_name }}</p>
+    <p>Фамилия: {{ user.last_name }}</p>
+    <p>Отчество: {{ user.middle_name }}</p>
+    <p>Полных лет: {{ user.age }}</p>
+    <p>Страна: {{ user.from_country }}</p>
+    <p>Уровень образования:{{ user.study_level }}</p>
+    <p>Статус: {{ user.status }}</p>
+
+    <form action="{{ url_for('add_socnet', id=user.id) }}" method="post" enctype="multipart/form-data">
+        <input type="submit" id="{{user.id}}">
+    </form>
+
+{%elif level=="socnets"%}
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('add_socnet', id=user.id) }}" method="post" enctype="multipart/form-data">
+        <input type="submit" id="{{user.id}}">
+    </form>
+    {{data["digital_users_table"]}}
+
+
+
+{%elif level=="logs"%}
+    <form action="{{ url_for('add_log', id=user.id) }}" method="post" enctype="multipart/form-data">
+        <input type="submit" id="{{user.id}}">
+    </form>
+    {%for log in data["logs"]%}
+    <p>{{log.log_text}}</p>
+    {%endfor%}
+{%endif%}
+{% endblock %}
+

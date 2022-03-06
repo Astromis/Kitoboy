@@ -1,0 +1,11 @@
+<!doctype html>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=page>
+  <tr>
+    <th><a href="{{ url_for('index')}}">Общая информация</a></th>
+    <th></th>
+    <th></th>
+  </tr>
+  <hr>
+  {% block body %}{% endblock %}
+</div>
