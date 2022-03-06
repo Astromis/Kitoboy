@@ -13,3 +13,4 @@ class Config(object):
     UPLOAD_FOLDER = '/tmp/'
     ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json'])
     POSTS_PER_PAGE = 10
+    SUICIDAL_RATING = [(0, "Normal"), (1, "Sus"), (2, "High")]
