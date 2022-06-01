@@ -10,10 +10,27 @@ import numpy as np
 import re
 from time import sleep
 
+import torch
+from transformers import AutoTokenizer, AutoModel
+from textfab import Conveyer
+from xgboost import XGBClassifier
+
+tokenizer = RegexTokenizer()
+model = FastTextSocialNetworkModel(tokenizer=tokenizer)
+
+
+bert_tokenizer = AutoTokenizer.from_pretrained("cointegrated/rubert-tiny2")
+bert_model = AutoModel.from_pretrained("cointegrated/rubert-tiny2")
+
+
+clf = XGBClassifier()
+clf.load_model("XGBClassifier-f1_0.71-v1.5.2.json")
+
+
 regex = [ ("[OLD]" ,re.compile(r"мне ([6-9])|([0-9]{2,2}) (лет|год)?") ), 
            ("[BANK]", re.compile(r"([0-9]{4,4}[ ]?){4,4}")),
            ("[TELE]", re.compile(r"^((\+?[0-9]{1,3})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$"))]
-
+""" 
 towns = pd.read_csv("/home/astromis/Datasets and corpuses/Словари/russian_town_list.csv", sep="|", header=None)
 with open("/home/astromis/Datasets and corpuses/Словари/russian_names_dict.txt") as f:
     names = f.read().lower().split() 
@@ -50,7 +67,7 @@ for t in towns:
 
 for i in ["короче", "нее", "дна", "дне"]:
     towns_extended.pop(towns_extended.index(i)) 
-
+ """
 def extract_data(texts:list):
     messages = []
     for m in texts:
@@ -66,8 +83,7 @@ def extract_data(texts:list):
                 messages.append("[TOWN] " + m)
     return messages
 
-tokenizer = RegexTokenizer()
-model = FastTextSocialNetworkModel(tokenizer=tokenizer)
+
 
 def get_sentiments(text:list):
     for x in text:
@@ -101,7 +117,7 @@ def get_sentiment_dynamic(df):
     #plt.xlabel('Время по неделям')
     #plt.savefig('static/img/test.png')
     #sleep(1)
-    return df_.groupby("date").mean().sum()/len(df_)
+    # emotional_coef = df_.groupby("date").mean().sum()/len(df_)
 
 def get_common_stats(df, outer):
     stats = {}
@@ -113,3 +129,26 @@ def get_common_stats(df, outer):
     stats["emotion_coef"] = "{:.2f}".format(float(outer["emotion_coef"]))
     stats['persentage_of_retweets'] = "{:.2f}".format(len(df[df.is_retweeted==True]) / len(df))
     return stats
+
+
+def embed_bert_cls(text, model, tokenizer):
+    t = tokenizer(text, padding=True, truncation=True, return_tensors='pt')
+    with torch.no_grad():
+        model_output = model(**{k: v.to(model.device) for k, v in t.items()})
+    embeddings = model_output.last_hidden_state[:, 0, :]
+    embeddings = torch.nn.functional.normalize(embeddings)
+    return embeddings[0].cpu().numpy()
+
+def preprocess(corp):
+    con = Conveyer(['remove_punct', "lower_string", "swap_enter_to_space", "collapse_spaces"])
+    corp = list(map(lambda x: re.sub(r"<emoji>.+</emoji>", "", x), corp))
+    corp = list(filter(lambda x: "<no text>" not in x, corp))
+    corp = list(map(lambda x:re.sub("[A-Za-z]+", '', x), corp))
+    corp = con.start(corp)
+    corp = list(filter(lambda x: len(x) > 2, corp))
+    return corp
+
+def predict_suicidal_signals(texts: list)->list:
+    vectors = [embed_bert_cls(x, bert_model, bert_tokenizer) for x in texts]
+    vectors = np.vstack(vectors)
+    return clf.predict(vectors)
