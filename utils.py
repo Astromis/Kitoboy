@@ -15,16 +15,16 @@ from transformers import AutoTokenizer, AutoModel
 from textfab import Conveyer
 from xgboost import XGBClassifier
 
-tokenizer = RegexTokenizer()
-model = FastTextSocialNetworkModel(tokenizer=tokenizer)
+#tokenizer = RegexTokenizer()
+#model = FastTextSocialNetworkModel(tokenizer=tokenizer)
 
 
-bert_tokenizer = AutoTokenizer.from_pretrained("cointegrated/rubert-tiny2")
-bert_model = AutoModel.from_pretrained("cointegrated/rubert-tiny2")
+#bert_tokenizer = AutoTokenizer.from_pretrained("cointegrated/rubert-tiny2")
+#bert_model = AutoModel.from_pretrained("cointegrated/rubert-tiny2")
 
 
-clf = XGBClassifier()
-clf.load_model("XGBClassifier-f1_0.71-v1.5.2.json")
+#clf = XGBClassifier()
+#clf.load_model("XGBClassifier-f1_0.71-v1.5.2.json")
 
 
 regex = [ ("[OLD]" ,re.compile(r"мне ([6-9])|([0-9]{2,2}) (лет|год)?") ), 

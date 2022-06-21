@@ -12,6 +12,11 @@ import pymorphy2
 import json
 from pathlib import Path
 
+# import sqlalchemy as db
+from sqlalchemy.orm import Session
+from models import engine
+from models import Users, Posts
+
 from utils import get_sentiments
 from utils import get_sentiment_dynamic
 from utils import get_common_stats
@@ -20,37 +25,47 @@ from utils import predict_suicidal_signals
 from twitter_scrapper import get_tweeter_user
 from subprocess import Popen
 
+#from flask_sqlalchemy import SQLAlchemy
+#from flask_migrate import Migrate
+from config import Config
+
 # configuration
-DATABASE = '/tmp/flaskr.db'
-DEBUG = True
-SECRET_KEY = 'development key'
-USERNAME = 'admin'
-PASSWORD = 'default'
 
 OUTER_STATS = {}
 
 app = Flask(__name__)
-app.config.from_object(__name__)
+app.config.from_object(Config)
 
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-    
+
+session = Session(bind=engine)
+
+# db = SQLAlchemy(app)
+# migrate = Migrate(app, db)
+
 @app.route('/', methods=['GET', 'POST'])
 def get_link():
     if request.method == 'POST':
         pass
         
         input_type = request.form['input_type']
-        
+        entered_url = request.form["user_url"]
         if input_type == "Twitter":
-            df = get_tweeter_user(request.form["user_url"])
+            user = Users(user_tag= entered_url.split("/")[-1],
+                        socnet_type="Twitter",
+                        is_exists=True)
+            session.add(user)
+            session.commit()
+            df = get_tweeter_user(user.id)
         elif input_type == "Telegram":
-            char_url = request.form["user_url"]
+            char_url = entered_url
             p = Popen(["python", "telegram_scrapper.py", char_url], shell=False)
             p.communicate()
             df = pd.read_csv(f"data/telegram_chat_{char_url}", sep="|")
-       
-        #df.to_csv("test.csv", sep="|")
+        df = pd.read_sql(session.query(Posts).all(), session.bind)
+        df.to_csv("test.csv", sep="|")
         # df = pd.read_csv("test.csv", sep="|")
+        
         df.dropna(inplace=True)
         sent_label, sent_score = get_sentiments(df.text.tolist())
         suicide_label = predict_suicidal_signals(df.text.tolist())
@@ -90,4 +105,4 @@ def get_link():
         '''
     
 if __name__ == '__main__':
-    app.run(host="localhost", port=8000, debug=DEBUG)
+    app.run(host="localhost", port=8000, debug=Config.DEBUG)
