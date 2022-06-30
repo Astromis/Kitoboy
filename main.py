@@ -56,13 +56,13 @@ def get_link():
                         is_exists=True)
             session.add(user)
             session.commit()
-            df = get_tweeter_user(user.id)
+            get_tweeter_user(user.id)
         elif input_type == "Telegram":
             char_url = entered_url
             p = Popen(["python", "telegram_scrapper.py", char_url], shell=False)
             p.communicate()
             df = pd.read_csv(f"data/telegram_chat_{char_url}", sep="|")
-        df = pd.read_sql(session.query(Posts).all(), session.bind)
+        df = pd.read_sql(session.query(Posts).filter(Posts.user_id == user.id).statement, session.bind)
         df.to_csv("test.csv", sep="|")
         # df = pd.read_csv("test.csv", sep="|")
         
