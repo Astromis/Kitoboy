@@ -130,3 +130,6 @@ dmypy.json
 
 .vscode/
 *.csv
+
+#
+data_for_db
