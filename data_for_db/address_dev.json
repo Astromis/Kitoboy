@@ -1,0 +1,6 @@
+[
+  {
+    "path": "http://localhost:8000/file_storage/audio/",
+    "data_type": "audio"
+  }
+]

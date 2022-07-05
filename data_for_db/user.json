@@ -1,0 +1,53 @@
+[
+  {
+    "login": "admin",
+    "password": "pass",
+    "first_name": "ivan1",
+    "last_name": "ivanov1",
+    "email": "test1@mail.ru",
+    "roles": [
+      "admin"
+    ]
+  },
+  {
+    "login": "manager",
+    "password": "pass",
+    "first_name": "ivan2",
+    "last_name": "ivanov2",
+    "email": "test2@mail.ru",
+    "roles": [
+      "manager"
+    ]
+  },
+  {
+    "login": "annotator_1",
+    "password": "pass",
+    "first_name": "ivan3",
+    "last_name": "ivanov3",
+    "email": "test3@mail.ru",
+    "roles": [
+      "annotator"
+    ]
+  },
+  {
+    "login": "verifier",
+    "password": "pass",
+    "first_name": "ivan4",
+    "last_name": "ivanov4",
+    "email": "test4@mail.ru",
+    "roles": [
+      "annotator",
+      "verifier"
+    ]
+  },
+  {
+    "login": "annotator_2",
+    "password": "pass",
+    "first_name": "ivan5",
+    "last_name": "ivanov5",
+    "email": "test5@mail.ru",
+    "roles": [
+      "annotator"
+    ]
+  }
+]

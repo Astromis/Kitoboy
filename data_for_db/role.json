@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "admin"
+  },
+    {
+    "id": 2,
+    "name": "manager"
+  },
+    {
+    "id": 3,
+    "name": "annotator"
+  },
+    {
+    "id": 4,
+    "name": "verifier"
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "ru_name": "локализация",
+    "en_name": "localization",
+    "author_id": 1,
+    "product_id": 1
+  },
+  {
+    "ru_name": "интенсивность",
+    "en_name": "intensity",
+    "author_id": 1,
+    "product_id": 3
+  },
+  {
+    "ru_name": "количество",
+    "en_name": "amount",
+    "author_id": 1,
+    "product_id": 1
+  },
+  {
+    "ru_name": "консистенция",
+    "en_name": "consistence",
+    "author_id": 1,
+    "product_id": 1
+  },
+  {
+    "ru_name": "время дня",
+    "en_name": "day_time",
+    "author_id": 1,
+    "product_id": 2
+  },
+  {
+    "ru_name": "длительность",
+    "en_name": "duration",
+    "author_id": 1,
+    "product_id": 2
+  },
+  {
+    "ru_name": "частотность",
+    "en_name": "frequency",
+    "author_id": 1,
+    "product_id": 2
+  },
+  {
+    "ru_name": "иррадиация",
+    "en_name": "irradiation",
+    "author_id": 1,
+    "product_id": 3
+  }
+]

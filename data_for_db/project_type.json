@@ -1,0 +1,14 @@
+[
+  {
+    "name": "audio_transcription"
+  },
+    {
+    "name": "sequence_labeling"
+  },
+    {
+    "name": "audio_classification"
+  },
+    {
+    "name": "document_classification"
+  }
+]

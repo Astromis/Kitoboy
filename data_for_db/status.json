@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "new"
+  },
+  {
+    "id": 2,
+    "name": "doing"
+  },
+  {
+    "id": 3,
+    "name": "verify"
+  },
+  {
+    "id": 4,
+    "name": "done"
+  },
+  {
+    "id": 5,
+    "name": "empty"
+  },
+  {
+    "id": 6,
+    "name": "hold"
+  }
+]
