@@ -132,4 +132,4 @@ dmypy.json
 *.csv
 
 #
-data_for_db
+/data_for_db
