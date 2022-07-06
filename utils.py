@@ -1,102 +1,9 @@
-from nltk import word_tokenize
-import pymorphy2
-
 
 import pandas as pd
-from dostoevsky.models import FastTextSocialNetworkModel
-from dostoevsky.tokenization import RegexTokenizer
 #from matplotlib import pyplot as plt
 import numpy as np
-import re
-from time import sleep
-
-import torch
-from transformers import AutoTokenizer, AutoModel
-from textfab import Conveyer
-from xgboost import XGBClassifier
-
-#tokenizer = RegexTokenizer()
-#model = FastTextSocialNetworkModel(tokenizer=tokenizer)
 
 
-#bert_tokenizer = AutoTokenizer.from_pretrained("cointegrated/rubert-tiny2")
-#bert_model = AutoModel.from_pretrained("cointegrated/rubert-tiny2")
-
-
-#clf = XGBClassifier()
-#clf.load_model("XGBClassifier-f1_0.71-v1.5.2.json")
-
-
-regex = [ ("[OLD]" ,re.compile(r"мне ([6-9])|([0-9]{2,2}) (лет|год)?") ), 
-           ("[BANK]", re.compile(r"([0-9]{4,4}[ ]?){4,4}")),
-           ("[TELE]", re.compile(r"^((\+?[0-9]{1,3})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$"))]
-""" 
-towns = pd.read_csv("/home/astromis/Datasets and corpuses/Словари/russian_town_list.csv", sep="|", header=None)
-with open("/home/astromis/Datasets and corpuses/Словари/russian_names_dict.txt") as f:
-    names = f.read().lower().split() 
-
-
-towns = towns[0].to_list()
-
-morph = pymorphy2.MorphAnalyzer()
-towns_extended = []
-for t in towns:
-    for form in ["gent", "loct"]:
-        town = morph.parse(t.lower())[0]
-        try:
-            town = town.inflect({form}).word
-        except:
-            continue
-        towns_extended.append(town)
-
-
-for i in ["короче", "нее", "дна", "дне"]:
-    towns_extended.pop(towns_extended.index(i)) 
-
-morph = pymorphy2.MorphAnalyzer()
-towns_extended = []
-for t in towns:
-    for form in ["gent", "loct"]:
-        town = morph.parse(t.lower())[0]
-        try:
-            town = town.inflect({form}).word
-        except:
-            continue
-        towns_extended.append(town)
-
-
-for i in ["короче", "нее", "дна", "дне"]:
-    towns_extended.pop(towns_extended.index(i)) 
- """
-def extract_data(texts:list):
-    messages = []
-    for m in texts:
-        tokenized = word_tokenize(m.lower())
-        for name in names:
-            if name in tokenized:
-                messages.append("[NAME] " + m)
-        for name, r in regex:
-            if r.search(m) != None:
-                messages.append(f"{name} " + m)
-        for t in towns_extended:
-            if t in tokenized:
-                messages.append("[TOWN] " + m)
-    return messages
-
-
-
-def get_sentiments(text:list):
-    for x in text:
-        if not isinstance( x, str):
-            print(x)
-    
-    results = model.predict(text, k=1)
-    label = []
-    score = []
-    for x, y in list([list(x.items())[0] for x in results]):
-        label.append(x)
-        score.append(y)
-    return label, score
 
 def get_sentiment_dynamic(df):
     sent2score = {"neutral": 0, "negative": -1, "positive": 1}
@@ -131,24 +38,3 @@ def get_common_stats(df, outer):
     return stats
 
 
-def embed_bert_cls(text, model, tokenizer):
-    t = tokenizer(text, padding=True, truncation=True, return_tensors='pt')
-    with torch.no_grad():
-        model_output = model(**{k: v.to(model.device) for k, v in t.items()})
-    embeddings = model_output.last_hidden_state[:, 0, :]
-    embeddings = torch.nn.functional.normalize(embeddings)
-    return embeddings[0].cpu().numpy()
-
-def preprocess(corp):
-    con = Conveyer(['remove_punct', "lower_string", "swap_enter_to_space", "collapse_spaces"])
-    corp = list(map(lambda x: re.sub(r"<emoji>.+</emoji>", "", x), corp))
-    corp = list(filter(lambda x: "<no text>" not in x, corp))
-    corp = list(map(lambda x:re.sub("[A-Za-z]+", '', x), corp))
-    corp = con.start(corp)
-    corp = list(filter(lambda x: len(x) > 2, corp))
-    return corp
-
-def predict_suicidal_signals(texts: list)->list:
-    vectors = [embed_bert_cls(x, bert_model, bert_tokenizer) for x in texts]
-    vectors = np.vstack(vectors)
-    return clf.predict(vectors)
