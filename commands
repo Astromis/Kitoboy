@@ -1,0 +1,1 @@
+sudo docker exec -it kitoboy_db psql -U label_it  -d labeling_db --password
