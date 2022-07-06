@@ -22,7 +22,7 @@ from utils import get_sentiment_dynamic
 from utils import get_common_stats
 from utils import extract_data
 from utils import predict_suicidal_signals
-from twitter_scrapper import get_tweeter_user
+from spider.twitter_scrapper import get_tweeter_user
 from subprocess import Popen
 
 #from flask_sqlalchemy import SQLAlchemy
