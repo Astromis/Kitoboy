@@ -132,7 +132,10 @@ dmypy.json
 *.csv
 
 #
+
 data_for_db
 data
 db-logs
 migrations
+
+
