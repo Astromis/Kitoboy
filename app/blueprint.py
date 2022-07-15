@@ -1,3 +1,5 @@
+import time
+
 from flask import Blueprint
 from flask import render_template
 #from jinja2 import TemplateNotFound
@@ -17,6 +19,26 @@ simple_page = Blueprint('simple_page', __name__,
 @simple_page.route('/')
 def home():
     return render_template('index.html')
+
+
+# route that will show will simply render an HTML template
+@simple_page.route("/tasks")
+def tasks():
+    return render_template("tasks.html")
+
+
+# route that will execute a long-running task
+@simple_page.route("/long_running_task")
+def long_running_task():
+    # time in seconds
+    time_to_wait = 15
+
+    print(f"This task will take {time_to_wait} seconds to complete...")
+    time.sleep(time_to_wait)
+
+    return f"<p>The task completed in {time_to_wait} seconds!"
+
+
 
 # import json
 # from flask import request, Blueprint

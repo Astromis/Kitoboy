@@ -1,0 +1,94 @@
+version: '3'
+
+
+services:
+    broker:
+        image: redis:latest
+        container_name: broker
+        environment:
+          - REDIS_REPLICATION_MODE=master
+        ports:
+          - '6379:6379'
+        volumes:
+          - './data/redis/data:/var/lib/redis'
+          - './data/redis/conf:/usr/local/etc/redis/redis.conf'
+        command: 'redis-server --requirepass redis123'
+
+    backend:
+        container_name: backend
+        build:
+          context: .
+          dockerfile: Dockerfile_db
+        env_file:
+          - './postgres_extra/data_base.env'
+        ports:
+          - '5432:5432'
+        volumes:
+          - './data/pgdb:/var/lib/postgresql/data'
+
+    worker:
+        build:
+            context: .
+            dockerfile: dockerfile.jobs
+        container_name: worker
+        command: celery --app=jobs.tasks worker --loglevel=info --logfile=jobs/logs/worker.log
+        volumes:
+          - ./project/jobs:/usr/src/jobs
+        environment:
+          - CELERY_BROKER_URL=redis://:redis123@broker:6379/0
+          - CELERY_RESULT_BACKEND=db+postgresql://dbc:dbc@backend:5432/scheduler
+        depends_on:
+          - broker
+          - backend
+
+    scheduler:
+        build:
+            context: .
+            dockerfile: dockerfile.jobs
+        container_name: scheduler
+        command: celery --app=jobs.tasks beat --loglevel=info --logfile=jobs/logs/scheduler.log
+        volumes:
+          - ./project/jobs:/usr/src/jobs
+        environment:
+          - CELERY_BROKER_URL=redis://:redis123@broker:6379/0
+          - CELERY_RESULT_BACKEND=db+postgresql://dbc:dbc@backend:5432/scheduler
+        depends_on:
+          - broker
+          - backend
+
+    flower:
+        build:
+            context: .
+            dockerfile: dockerfile.jobs
+        container_name: flower
+        command: celery --app=jobs.tasks flower --port=5555
+        ports:
+          - '5555:5555'
+        environment:
+          - CELERY_BROKER_URL=redis://:redis123@broker:6379/0
+          - CELERY_RESULT_BACKEND=db+postgresql://dbc:dbc@backend:5432/scheduler
+        volumes:
+          - ./project/jobs:/usr/src/jobs
+        depends_on:
+          - broker
+          - backend
+          - scheduler
+          - worker
+
+    web:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: web
+        env_file:
+          - './env.env'
+        ports:
+          - '5000:5000'
+        volumes:
+          - './:/var/www/kitoboy/backend'
+        depends_on:
+          - broker
+          - backend
+          - scheduler
+          - worker
+

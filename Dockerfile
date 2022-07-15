@@ -38,7 +38,7 @@ COPY . $WORK_DIR
 # creates log files for celery, add celery user, creates nginx.conf, creates supervisord.conf
 RUN  touch  celery_tasks-stderr.log  celery_tasks-stdout.log && \
      useradd celery && \
-     # chmod 666 $WORK_DIR/app/logs/* && \
+     chmod 666 $WORK_DIR/app/logs/* && \
      cp $WORK_DIR/nginx.conf /etc/nginx/sites-available/default && \
      cp $WORK_DIR/supervisord.conf /etc/supervisor/conf.d/supervisord.conf && \
      chmod u+x $WORK_DIR/scripts/db_fill.sh
@@ -51,6 +51,6 @@ WORKDIR $WORK_DIR
 ARG app_version=0.0.0
 ENV APP_VERSION=${app_version}
 
-
+CMD ["gunicorn",  "--bind",  "0.0.0.0:5000", "main_2:app"]
 # CMD ["/usr/bin/supervisord"]
-CMD ["python3", "main_2.py", "runserver"]
+# CMD ["python3", "main_2.py", "runserver"]

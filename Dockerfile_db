@@ -1,4 +1,4 @@
-FROM postgres:9.6.6-alpine
+FROM  postgres:14.1-alpine
 
 RUN echo > /var/lib/postgresql/data/pg_hba.conf  && \
     echo "local all all md5" >> /var/lib/postgresql/data/pg_hba.conf && \

@@ -1,0 +1,3 @@
+broker: redis://:redis123@localhost:6379/0
+backend: db+postgresql://dbc:dbc@localhost:5432/scheduler
+api_key: 3351b462b01f470e96775721212911

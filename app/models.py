@@ -1,40 +1,7 @@
-# from app.auth_api.models import User
-# from app.datasets.models import Dataset
 from sqlalchemy.sql.functions import current_timestamp
 
 from app.app import db, ma
 from app.db_controller.controller import AbsModel
-
-
-# class GuidelineSchema(ma.Schema):
-#     class Meta:
-#         fields = ('id', 'title', 'content', 'author_login')
-#
-#
-# class BaseSchema(ma.Schema):
-#     class Meta:
-#         fields = ('id', 'name')
-#
-#
-# class ProductSchema(ma.Schema):
-#     class Meta:
-#      LINE_SCHEMAS = GuidelineSchema()
-# GUIDELINES_SCHEMA = GuidelineSchema(many=True)
-#
-# BASE_SCHEMA = BaseSchema(many=True)
-#
-# PRODUCT_SCHEMA = ProductSchema()
-# PRODUCTS_SCHEMA = ProductSchema(many=True)
-#    fields = ('id', 'name', 'project_types')
-#
-#
-# GUIDELINE_SCHEMAS = GuidelineSchema()
-# GUIDELINES_SCHEMA = GuidelineSchema(many=True)
-#
-# BASE_SCHEMA = BaseSchema(many=True)
-#
-# PRODUCT_SCHEMA = ProductSchema()
-# PRODUCTS_SCHEMA = ProductSchema(many=True)
 
 
 class DateTimeMixin:

@@ -57,21 +57,21 @@ PORT - желаемый порт, например 800
 
 Для поднятия контейнера с backend'ом необходимо выполнить:
 
-1 sudo docker-compose up -d --build    # Поднятие контейнера
-2 sudo docker exec kitoboy python3.6 db_manager.py create_db   # Создание таблиц в докере
-3 sudo docker exec kitoboy ./scripts/./db_fill.sh dev | prod     # наполнение таблиц тестовыми данными:
+1 docker-compose up -d --build    # Поднятие контейнера
+2 docker exec kitoboy python3.6 db_manager.py create_db   # Создание таблиц в докере
+3 docker exec kitoboy ./scripts/./db_fill.sh dev | prod     # наполнение таблиц тестовыми данными:
 
 check on:
 localhost:8000
 
 
 Для входа в бд в контейнере:
-1 sudo docker exec -it ????? psql -U ?????  -d  ?????  --password
+1 docker exec -it ????? psql -U ?????  -d  ?????  --password
 
 
-#3. sudo docker-compose -f docker-compose-db.yaml restart (применить pg_hba.conf)
-#Чтобы изменить environment - нужно 1ую команду заменить на :
-#sudo docker-compose -f docker-compose-db.yaml --env-file PATH up --build
+3. docker-compose -f docker-compose-db.yaml restart (применить pg_hba.conf)
+Чтобы изменить environment - нужно 1ую команду заменить на :
+sudo docker-compose -f docker-compose-db.yaml --env-file PATH up --build
 
 
 
@@ -100,9 +100,7 @@ localhost:8000
      python3 db_manager.py db downgrade <идентификатор ревизии revision к которой нужно откатиться>
 
 
-# Set up pre-commit hook
-- Install pre-commit package manager `pip install pre-commit`
-- Install the git hook config (.pre-commit-config.yaml) at .git/hooks/pre-commit `pre-commit install`
+
 
 
 

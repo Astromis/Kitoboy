@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3'
 
 services:
   redis:
@@ -17,8 +17,7 @@ services:
     env_file:
       - "./env.env"
     ports:
-      - "8000:80"
-
+      - "5000:5000"
     volumes:
       - './:/var/www/kitoboy/backend'
     depends_on:

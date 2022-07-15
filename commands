@@ -1,1 +1,4 @@
-sudo docker exec -it kitoboy_db psql -U label_it  -d labeling_db --password
+docker exec -it backend psql -U dbc -d scheduler --password
+
+
+docker exec web python3.6 db_manager.py create_db
