@@ -133,3 +133,6 @@ dmypy.json
 
 #
 data_for_db
+data
+db-logs
+migrations
