@@ -133,3 +133,6 @@ dmypy.json
 
 #
 /data_for_db
+/data
+/postgres-data
+/.idea

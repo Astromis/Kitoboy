@@ -66,7 +66,7 @@ localhost:8000
 
 
 Для входа в бд в контейнере:
-1 sudo docker exec -it ????? psql -U ?????  -d  ?????  --password
+1 sudo docker exec -it db psql -U test  -d  kitoboy_db  --password
 
 
 #3. sudo docker-compose -f docker-compose-db.yaml restart (применить pg_hba.conf)
@@ -100,9 +100,6 @@ localhost:8000
      python3 db_manager.py db downgrade <идентификатор ревизии revision к которой нужно откатиться>
 
 
-# Set up pre-commit hook
-- Install pre-commit package manager `pip install pre-commit`
-- Install the git hook config (.pre-commit-config.yaml) at .git/hooks/pre-commit `pre-commit install`
 
 
 

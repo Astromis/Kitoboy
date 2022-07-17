@@ -32,7 +32,7 @@ services:
     container_name: 'kitoboy_db'
     restart: always
     env_file:
-      - './postgres_extra/data_base.env'
+      - "./env.env"
     ports:
       - "5432:5432"
     volumes:
