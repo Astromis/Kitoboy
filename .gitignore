@@ -132,7 +132,7 @@ dmypy.json
 *.csv
 
 #
-/data_for_db
+
 /data
 /postgres-data
 /.idea
