@@ -1,108 +1,52 @@
-# all the imports
-import os
+from app.app import app, manager
 
-from flask import Flask, request, session, g, redirect, url_for, \
-     abort, render_template, flash
-from werkzeug.utils import secure_filename
+from app.blueprint import simple_page
 
-from flask import send_from_directory
+# from app.auth_api.blueprint import blueprint as auth_module
+# from app.tasks_manager_api.blueprint import blueprint as tm_module
+# from app.datasets.blueprint import blueprint as ds_module
+# from app.storage.blueprint import blueprint as storage_module
+# from app.projects_api.blueprint import blueprint as projects_module
+#
+app.register_blueprint(simple_page)
+#
+# app.register_blueprint(storage_module)
+#
+# app.register_blueprint(auth_module,
+#                        url_prefix=app.config['URL_PREFIX_AUTH_API'])
+#
+# app.register_blueprint(tm_module,
+#                        url_prefix=app.config['URL_PREFIX_TASK_MANAGER_API'])
+#
+# app.register_blueprint(projects_module,
+#                        url_prefix=app.config['URL_PREFIX_TASK_MANAGER_API'])
 
-import pandas as pd
-import pymorphy2
-import json
-from pathlib import Path
 
-# import sqlalchemy as db
-from sqlalchemy.orm import Session
-from models import engine
-from models import Users, Posts
+@manager.command
+def runserver():
+    app.run(host='0.0.0.0', port=8000)
 
-from utils import get_sentiments
-from utils import get_sentiment_dynamic
-from utils import get_common_stats
-from utils import extract_data
-from utils import predict_suicidal_signals
-from spider.twitter_scrapper import get_tweeter_user
-from subprocess import Popen
 
-#from flask_sqlalchemy import SQLAlchemy
-#from flask_migrate import Migrate
-from config import Config
-
-# configuration
-
-OUTER_STATS = {}
-
-app = Flask(__name__)
-app.config.from_object(Config)
-
-app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-
-session = Session(bind=engine)
-
-# db = SQLAlchemy(app)
-# migrate = Migrate(app, db)
-
-@app.route('/', methods=['GET', 'POST'])
-def get_link():
-    if request.method == 'POST':
-        pass
-        
-        input_type = request.form['input_type']
-        entered_url = request.form["user_url"]
-        if input_type == "Twitter":
-            user = Users(user_tag= entered_url.split("/")[-1],
-                        socnet_type="Twitter",
-                        is_exists=True)
-            session.add(user)
-            session.commit()
-            get_tweeter_user(user.id)
-        elif input_type == "Telegram":
-            char_url = entered_url
-            p = Popen(["python", "telegram_scrapper.py", char_url], shell=False)
-            p.communicate()
-            df = pd.read_csv(f"data/telegram_chat_{char_url}", sep="|")
-        df = pd.read_sql(session.query(Posts).filter(Posts.user_id == user.id).statement, session.bind)
-        df.to_csv("test.csv", sep="|")
-        # df = pd.read_csv("test.csv", sep="|")
-        
-        df.dropna(inplace=True)
-        sent_label, sent_score = get_sentiments(df.text.tolist())
-        suicide_label = predict_suicidal_signals(df.text.tolist())
-        df["sentiment"] = sent_label
-        df["score"] = sent_score
-        df["suicide_label"] = suicide_label
-        df = df[~df.sentiment.isin(["skip", "speech"])]
-        df.to_csv("data/debug.csv", sep="|")
-        # OUTER_STATS["emotion_coef"] = get_sentiment_dynamic(df)
-        # stats = get_common_stats(df, OUTER_STATS)
-        neg_text = df[(df.score > 0.75)& (df.sentiment == "negative")].text.tolist()
-        pos_text = df[(df.score > 0.75)& (df.sentiment == "positive")].text.tolist()
-        suicidal_signals = df[df.suicide_label == 1].text.tolist()
-        other_data = [] #extract_data(df.text)
-        if input_type == "Twitter":
-            return render_template("userpage.html", sentiment_dynamic = Path("static/img/test.png"), neg_text=neg_text, pos_text=pos_text, other_data=other_data, suicidal_signals=suicidal_signals) 
-        else:
-            return render_template("userpage_telegram.html", groped_users=df)
-
-    else:
-        return '''
-        <!doctype html>
-        <title>Китобой</title>
-        <h1>Введите Twitter ссылку</h1>
-        <form action="" method=post >
-
-        <input type="radio" id="input_type_1"
-            name="input_type" value="Telegram">
-        <label for="input_type">Telegram</label>
-
-        <input type="radio" id="input_type_2"
-            name="input_type" value="Twitter">
-        <label for="input_type">Twitter</label>
-        <p><input type=text name=user_url>
-            <input type=submit value=Scan>
-        </form>
-        '''
-    
 if __name__ == '__main__':
-    app.run(host="localhost", port=8000, debug=Config.DEBUG)
+    manager.run()
+
+
+
+
+#
+# import os
+#
+# from flask import Flask, render_template
+#
+#
+# app = Flask(__name__)
+#
+#
+# @app.route('/')
+# def home():
+#     return render_template('index.html')
+#
+#
+# if __name__ == "__main__":
+#     port = int(os.environ.get('PORT', 5000))
+#     app.run(debug=True, host='0.0.0.0', port=port)

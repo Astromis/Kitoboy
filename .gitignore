@@ -131,8 +131,15 @@ dmypy.json
 .vscode/
 *.csv
 
-#
-
+# directories
 /data
 /postgres-data
 /.idea
+/db-data
+/db-logs
+/migrations
+/app/logs
+
+# files
+supervisord.log
+supervisord.pid

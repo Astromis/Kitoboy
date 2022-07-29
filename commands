@@ -1,1 +1,13 @@
 sudo docker exec -it kitoboy_db psql -U label_it  -d labeling_db --password
+
+
+
+git checkout dev_add_postgres_to_flask
+git pull
+docker-compose up -d --build
+
+docker exec app python3.8 db_manager.py drop_db
+docker exec app python3.8 db_manager.py create_db  # init data base
+docker exec app ./scripts/./db_fill.sh dev # # наполнение таблиц тестовыми данными:
+
+docker exec -it db psql -U test  -d kitoboy_db  --password # проверить контейнер с базой
