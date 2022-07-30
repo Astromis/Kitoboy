@@ -56,10 +56,10 @@ PORT - желаемый порт, например 800
 
 Для поднятия контейнера с сервисом kitoboy необходимо выполнить последовательность команд:
 
-1 docker-compose up -d --build # Поднятие контейнера
-2 docker exec app python3.8 db_manager.py drop_db   # Удаление таблиц в бд (опционально)
-3 docker exec app python3.8 db_manager.py create_db  # Создание таблиц описанных в models (init data base)
-3 docker exec app ./scripts/./db_fill.sh dev    # наполнение таблиц тестовыми данными
+1. docker-compose up -d --build # Поднятие контейнера
+2. docker exec app python3.8 db_manager.py drop_db   # Удаление таблиц в бд (опционально)
+3. docker exec app python3.8 db_manager.py create_db  # Создание таблиц описанных в models (init data base)
+4. docker exec app ./scripts/./db_fill.sh dev    # наполнение таблиц тестовыми данными
 
 check on:
 localhost:8000
