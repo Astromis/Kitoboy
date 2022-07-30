@@ -1,47 +1,41 @@
 version: '3.3'
 
 services:
-  redis:
-    container_name: 'redis_backend'
-    image: redis
-    restart: always
-    expose:
-      - '6379'
 
-  kitoboy:
-    container_name: 'kitoboy'
+  db:
+    image: 'postgres:9.6.6-alpine'
+    container_name: 'db'
+    env_file:
+      - ./env.env
+    ports:
+      - 5432:5432
+    # The `volumes` tag allows us to share a folder with our container.
+    # Its syntax is as follows: [folder path on our machine]:[folder path to retrieve in the container]
+    volumes:
+      # In this example, we share the folder `db-data` in our root repository, with the default PostgreSQL data path.
+      # It means that every time the repository is modifying the data inside
+      # `/var/lib/postgresql/data/`, automatically the change will appear in `db-data`.
+      # You don't need to create the `db-data` folder. Docker Compose will do it for you.
+      - db-data/:/var/lib/postgresql/data/
+
+  app:
+    container_name: 'app'
     restart: always
     build:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - "./env.env"
+      - ./env.env
     ports:
-      - "8000:80"
-
+      - 8000:80
     volumes:
-      - './:/var/www/kitoboy/backend'
+      - ./:/var/www/kitoboy_service/backend
     depends_on:
-      - redis
       - db
 
-  db:
-    build:
-      context: .
-      dockerfile: Dockerfile_bd
-    container_name: 'kitoboy_db'
-    restart: always
-    env_file:
-      - './postgres_extra/data_base.env'
-    ports:
-      - "5432:5432"
-    volumes:
-      - './postgres-data:/var/lib/postgresql/data'
-      - './db-logs/:/logs'
-
 volumes:
-  postgres-data:
-  db-logs:
+  db-data:
+
 
 
 

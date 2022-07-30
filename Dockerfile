@@ -1,8 +1,8 @@
-FROM ubuntu:18.04
+FROM python:3.8
 
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
-ENV WORK_DIR /var/www/kitoboy/backend
+
+ENV WORK_DIR /var/www/kitoboy_service/backend
+
 
 # Install base packages
 RUN apt-get update && apt-get install -y \
@@ -12,10 +12,6 @@ RUN apt-get update && apt-get install -y \
   curl \
   nano \
   nginx \
-  python3.8 \
-  libpython3.8 \
-  python3.8-dev \
-  python3.8-venv \
   python3-setuptools \
   python3-pip \
   locales \
@@ -23,7 +19,7 @@ RUN apt-get update && apt-get install -y \
   uwsgi \
   uwsgi-plugin-python3 \
   libpcre3 \
-  python-wheel \
+  python3-wheel \
   libssl-dev \
   supervisor \
   systemd && \
@@ -44,7 +40,9 @@ RUN  touch  celery_tasks-stderr.log  celery_tasks-stdout.log && \
      chmod u+x $WORK_DIR/scripts/db_fill.sh
 
 
-RUN pip3 install --no-cache  -r $WORK_DIR/requirements.txt
+RUN pip install --no-cache  -r $WORK_DIR/requirements.txt && \
+    python3.8 -m dostoevsky download fasttext-social-network-model
+
 
 WORKDIR $WORK_DIR
 
@@ -52,5 +50,5 @@ ARG app_version=0.0.0
 ENV APP_VERSION=${app_version}
 
 
-# CMD ["/usr/bin/supervisord"]
-CMD ["python3", "main_2.py", "runserver"]
+CMD ["/usr/bin/supervisord"]
+# CMD ["python3", "main.py", "runserver"]

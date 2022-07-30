@@ -1,18 +1,9 @@
-import json
 import datetime
-# from threading import Thread
-from warnings import warn
+
 from sqlalchemy.exc import IntegrityError, InterfaceError
 from sqlalchemy import desc
-# import azure.cosmos.cosmos_client as cosmos_client
-# import azure.cosmos.errors as errors
-# import azure.cosmos.http_constants as http_constants
-# import azure.cosmos.documents as documents
-# from azure.storage.filedatalake import DataLakeServiceClient
-from app.app import db, app
-from app.errors.error_handler import DbException, error_handler
-
-# LOGGER = get_logger()
+from app.app import db
+from app.errors.error_handler import DbException
 
 
 class AbsModel(db.Model):
