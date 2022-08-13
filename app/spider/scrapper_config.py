@@ -1,15 +1,15 @@
 vk_xpath_headless = {
     "wall": "//div[@id='page_wall_posts']",
-    "text": '', # data-testid
-    "is_reposted": "",
-    "nickname" : "",
-    "user_tag": "",
-    "is_exists": "",
+    "text": '.', # data-testid
+    "is_reposted": ".",
+    "nickname" : ".",
+    "user_tag": ".",
+    "is_exists": ".",
     "username_input" : "//input[@class='VkIdForm__input']",
     "password_input" : "//input[@class='vkc__TextField__input'][@type='password']",
     "otp_input": "//input[@class='vkc__TextField__input'][@name='otp']",
-    "login_next_button" : '',
-    "user_tag_on_rel_pages" : ''
+    "login_next_button" : '.',
+    "user_tag_on_rel_pages" : '.'
 }
 
 twitter_xpath_head = {
@@ -28,10 +28,10 @@ twitter_xpath_head = {
 
 
 twitter_xpath_headless = {
-    "header": "//div[@class=['css-1dbjc4n r-1wbh5a2 r-dnmrzs r-1ny4l3l']",
-    "wall": "//article[@class=['css-1dbjc4n r-1loqt21 r-18u37iz r-1ny4l3l r-1udh08x r-1qhn6m8 r-i023vh r-o7ynqc r-6416eg']",
+    "header": "//div[@class='css-1dbjc4n r-1wbh5a2 r-dnmrzs r-1ny4l3l']",
+    "wall": "//article[@class='css-1dbjc4n r-1loqt21 r-18u37iz r-1ny4l3l r-1udh08x r-1qhn6m8 r-i023vh r-o7ynqc r-6416eg']",
     "text": ".//div[@class='css-901oao r-18jsvk2 r-37j5jr r-a023e6 r-16dba41 r-rjixqe r-bcqeeo r-bnwqim r-qvutc0']", # data-testid
-    "is_reposted": ".//span[@class=['css-901oao css-16my406 css-cens5h r-1bwzh9t r-poiln3 r-n6v787 r-b88u0q r-1cwl3u0 r-bcqeeo r-qvutc0']",
+    "is_reposted": ".//span[@class='css-901oao css-16my406 css-cens5h r-1bwzh9t r-poiln3 r-n6v787 r-b88u0q r-1cwl3u0 r-bcqeeo r-qvutc0']",
     "nickname" : ".//div[@class='css-901oao r-1awozwy r-18jsvk2 r-6koalj r-37j5jr r-a023e6 r-b88u0q r-rjixqe r-bcqeeo r-1udh08x r-3s2u2q r-qvutc0']",
     "user_tag": ".//div[@class='css-901oao css-1hf3ou5 r-14j79pv r-18u37iz r-37j5jr r-a023e6 r-16dba41 r-rjixqe r-bcqeeo r-qvutc0']",
     "is_exists": "//div[@class='css-901oao r-18jsvk2 r-37j5jr r-1yjpyg1 r-1vr29t4 r-ueyrd6 r-5oul0u r-bcqeeo r-fdjqy7 r-qvutc0']",
