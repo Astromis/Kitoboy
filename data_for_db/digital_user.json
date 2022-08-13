@@ -1,44 +1,43 @@
-[
-  {
-    "socnet_id": "user_1",
-    "socnet_name": "twitter",
-    "is_collected": true,
-    "account_status": "open"
-  },
-  {
-    "socnet_id": "user_2",
-    "socnet_name": "twitter",
-    "is_collected": true,
-    "account_status": "open"
-  },
-  {
-    "socnet_id": "user_3",
-    "socnet_name": "twitter",
-    "is_collected": true,
-    "account_status": "open"
-  },
-  {
-    "socnet_id": "user_4",
-    "socnet_name": "twitter",
-    "is_collected": true,
-    "account_status": "open"
-  },
-  {
-    "socnet_id": "user_5",
-    "socnet_name": "twitter",
-    "is_collected": true,
-    "account_status": "open"
-  },
-  {
-    "socnet_id": "user_6",
-    "socnet_name": "twitter",
-    "is_collected": true,
-    "account_status": "open"
-  },
-  {
-    "socnet_id": "user_7",
-    "socnet_name": "twitter",
-    "is_collected": true,
-    "account_status": "open"
-  }
+[{
+        "socnet_id": "user_1",
+        "socnet_name": "twitter",
+
+        "account_status": "open"
+    },
+    {
+        "socnet_id": "user_2",
+        "socnet_name": "twitter",
+
+        "account_status": "open"
+    },
+    {
+        "socnet_id": "user_3",
+        "socnet_name": "twitter",
+
+        "account_status": "open"
+    },
+    {
+        "socnet_id": "user_4",
+        "socnet_name": "twitter",
+
+        "account_status": "open"
+    },
+    {
+        "socnet_id": "user_5",
+        "socnet_name": "twitter",
+
+        "account_status": "open"
+    },
+    {
+        "socnet_id": "user_6",
+        "socnet_name": "twitter",
+
+        "account_status": "open"
+    },
+    {
+        "socnet_id": "user_7",
+        "socnet_name": "twitter",
+
+        "account_status": "open"
+    }
 ]

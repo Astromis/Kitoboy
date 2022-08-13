@@ -1,11 +1,31 @@
 <!DOCTYPE html>
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Flask Docker </title>
 </head>
+
 <body>
     <h1>This is a Flask App containerised with Docker!</h1>
+    <table>
+        <tr>
+            <th>..</th>
+            <th>Ссылка пользователя</th>
+            <th>Суицидальный рейтинг</th>
+            <th>Посты</th>
+        </tr>
+        {% for user in user_list %}
+        <tr>
+            <td><input type="radio" name="id" value="{{user.id}}"></td>
+            <td>{{user.socnet_id}}</td>
+            <td>{{user.suicide_rating.human_risk_estimation}}</td>
+            <td><a href="{{ url_for('simple_page.view_user_post', user_id=user.id) }}">Посты</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
 </body>
+
 </html>
