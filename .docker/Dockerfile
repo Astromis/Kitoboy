@@ -49,6 +49,11 @@ WORKDIR $WORK_DIR
 ARG app_version=0.0.0
 ENV APP_VERSION=${app_version}
 
+#ADD start.sh /
+#RUN chmod +x /start.sh
 
-CMD ["/usr/bin/supervisord"]
-# CMD ["python3", "main.py", "runserver"]
+#CMD ["/start.sh"]
+
+
+#CMD ["/usr/bin/supervisord"]
+CMD ["gunicorn",  "-b", "0.0.0.0:8000",  "main:app"]

@@ -143,3 +143,5 @@ dmypy.json
 # files
 supervisord.log
 supervisord.pid
+celerybeat.pid
+celerybeat-schedule
