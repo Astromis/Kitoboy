@@ -35,8 +35,8 @@ COPY . $WORK_DIR
 RUN  touch  celery_tasks-stderr.log  celery_tasks-stdout.log && \
      useradd celery && \
      # chmod 666 $WORK_DIR/app/logs/* && \
-     cp $WORK_DIR/nginx.conf /etc/nginx/sites-available/default && \
-     cp $WORK_DIR/supervisord.conf /etc/supervisor/conf.d/supervisord.conf && \
+     # cp $WORK_DIR/nginx.conf /etc/nginx/sites-available/default && \
+     # cp $WORK_DIR/supervisord.conf /etc/supervisor/conf.d/supervisord.conf && \
      chmod u+x $WORK_DIR/scripts/db_fill.sh
 
 
@@ -49,11 +49,5 @@ WORKDIR $WORK_DIR
 ARG app_version=0.0.0
 ENV APP_VERSION=${app_version}
 
-#ADD start.sh /
-#RUN chmod +x /start.sh
 
-#CMD ["/start.sh"]
-
-
-#CMD ["/usr/bin/supervisord"]
 CMD ["gunicorn",  "-b", "0.0.0.0:8000",  "main:app"]

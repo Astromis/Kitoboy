@@ -2,11 +2,17 @@ version: '3.3'
 
 services:
 
+  brocker:
+    container_name: 'brocker'
+    image: redis
+    ports:
+      - 6379:6379
+
   db:
     image: 'postgres:9.6.6-alpine'
     container_name: 'db'
     env_file:
-      - ./env.env
+      - env/env.env
     ports:
       - 5432:5432
     # The `volumes` tag allows us to share a folder with our container.
@@ -20,17 +26,57 @@ services:
 
   app:
     container_name: 'app'
-    restart: always
+    # restart: always
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: .docker/Dockerfile
+    image: 'kitoboy_app:1.0'
     env_file:
-      - ./env.env
+      - env/env.env
     ports:
-      - 8000:80
+      - 8001:8000
     volumes:
       - ./:/var/www/kitoboy_service/backend
     depends_on:
+      - brocker
+      - db
+
+  worker:
+    container_name: 'worker'
+    image: 'kitoboy_app:1.0'
+    env_file:
+      - env/env.env
+    command: /bin/sh -c "scripts/start_celeryworker.sh"
+    volumes:
+      - ./:/var/www/kitoboy_service/backend
+    depends_on:
+      - brocker
+      - db
+
+  scheduler:
+    container_name: 'scheduler'
+    image: 'kitoboy_app:1.0'
+    env_file:
+      - env/env.env
+    command: /bin/sh -c "scripts/start_celerybeat.sh"
+    volumes:
+      - ./:/var/www/kitoboy_service/backend
+    depends_on:
+      - brocker
+      - db
+
+  flower:
+    container_name: 'flower'
+    image: 'kitoboy_app:1.0'
+    env_file:
+      - env/env.env
+    ports:
+      - 5555:5555
+    command: /bin/sh -c "scripts/start_flower.sh"
+    volumes:
+      - ./:/var/www/kitoboy_service/backend
+    depends_on:
+      - brocker
       - db
 
 volumes:
