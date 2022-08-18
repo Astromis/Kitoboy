@@ -2,9 +2,8 @@ from .app import celery
 from datetime import datetime
 # from subprocess import Popen
 
-# from .crawlers.twitter_scrapper import get_tweeter_user
-# from .crawlers.vk_scrapper import get_vk_user
-
+# from crawlers.twitter_scrapper import get_tweeter_user
+# from crawlers.vk_scrapper import get_vk_user
 
 
 # @celery.task
