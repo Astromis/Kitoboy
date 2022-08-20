@@ -7,4 +7,4 @@ set -o nounset
 
 rm -f './celerybeat.pid'
 
-celery -A app.app.celery beat --loglevel=INFO
+celery -A app.app.celery_instance beat --loglevel=INFO

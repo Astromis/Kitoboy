@@ -36,7 +36,7 @@ def make_celery(app):
     return celery
 
 
-celery = make_celery(app)
+celery_instance = make_celery(app)
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 migrate = Migrate(app, db)

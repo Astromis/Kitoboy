@@ -7,7 +7,7 @@ set -o nounset
 
 
 worker_ready() {
-    celery -A app.app.celery inspect ping
+    celery -A app.app.celery_instance inspect ping
 }
 
 until worker_ready; do
@@ -16,4 +16,4 @@ until worker_ready; do
 done
 >&2 echo 'Celery workers is available'
 
-celery -A app.app.celery flower
+celery -A app.app.celery_instance flower

@@ -1,4 +1,4 @@
-from app.app import app, manager, celery
+from app.app import app, manager, celery_instance
 from app.blueprint import simple_page
 
 
@@ -8,7 +8,7 @@ app.register_blueprint(simple_page)
 
 @manager.command
 def runserver():
-    celery.start()
+    celery_instance.start()
     app.run(host='0.0.0.0', port=8000, debug=True)
 
 
