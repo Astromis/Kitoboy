@@ -1,5 +1,5 @@
 vk_xpath_headless = {
-    "wall": "//div[@id='page_wall_posts']",
+    "wall": "//div[@class='wall_posts all mark_top ']",
     "text": '.', # data-testid
     "is_reposted": ".",
     "nickname" : ".",
@@ -7,7 +7,7 @@ vk_xpath_headless = {
     "is_exists": ".",
     "username_input" : "//input[@class='VkIdForm__input']",
     "password_input" : "//input[@class='vkc__TextField__input'][@type='password']",
-    "otp_input": "//input[@class='vkc__TextField__input'][@name='otp']",
+    "otp_input": "//input[@class='vkc__TextField__input vkc__TextField__codeInput'][@name='otp']",
     "login_next_button" : '.',
     "user_tag_on_rel_pages" : '.'
 }

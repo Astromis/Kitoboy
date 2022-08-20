@@ -15,5 +15,5 @@ class Post(BaseModel):
     is_reposted: bool
     nickname: str
     user_tag: str
-    datetime: Optional[datetime]
+    datetime: Optional[str]
     multimedia: Optional[List[Multimedia]]

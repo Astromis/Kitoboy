@@ -13,6 +13,8 @@ from .scrapper_config import vk_xpath_headless
 
 USER = 'aarmaageedoon@yandex.ru' 
 MY_PASSWORD = '4611116003Igor'
+LOWER_BOUND_SLICE = 25
+
 
 driver = None
 
@@ -32,12 +34,12 @@ def login_into_vk(driver, username, password):
     wait_till_present(driver, vk_xpath_headless["password_input"])
     password_field = driver.find_element_by_xpath(vk_xpath_headless["password_input"])
     password_field.send_keys(password)
-    continue_button = driver.find_element_by_xpath('//button[@class="vkc__Button__container vkc__Button__primary vkc__Button__fluid"]')
+    continue_button = driver.find_element_by_xpath('//button[@class="vkuiButton Button vkuiButton--sz-l Button--sz-l vkuiButton--lvl-primary Button--lvl-primary vkuiButton--clr-accent Button--clr-accent vkuiButton--aln-center Button--aln-center vkuiButton--sizeY-compact Button--sizeY-compact vkuiButton--stretched Button--stretched vkuiTappable Tappable vkuiTappable--sizeX-compact Tappable--sizeX-compact vkuiTappable--hasHover Tappable--hasHover vkuiTappable--hasActive Tappable--hasActive vkuiTappable--mouse Tappable--mouse"]')
     continue_button.click()
     wait_till_present(driver, vk_xpath_headless["otp_input"])
     otp = driver.find_element_by_xpath(vk_xpath_headless["otp_input"])
     otp.send_keys(getpass())
-    continue_button = driver.find_element_by_xpath('//button[@class="vkc__Button__container vkc__Button__primary vkc__Button__fluid"]')
+    continue_button = driver.find_element_by_xpath('//button[@class="vkuiButton Button vkuiButton--sz-l Button--sz-l vkuiButton--lvl-primary Button--lvl-primary vkuiButton--clr-accent Button--clr-accent vkuiButton--aln-center Button--aln-center vkuiButton--sizeY-compact Button--sizeY-compact vkuiButton--stretched Button--stretched vkuiTappable Tappable vkuiTappable--sizeX-compact Tappable--sizeX-compact vkuiTappable--hasHover Tappable--hasHover vkuiTappable--hasActive Tappable--hasActive vkuiTappable--mouse Tappable--mouse"]')
     continue_button.click()
     wait_till_present(driver, "//div[@class='LeftMenu__icon']")
     return True
@@ -49,11 +51,13 @@ def init_driver():
     global driver
     driver = webdriver.Firefox(options=options)
     if not login_into_vk(driver, USER, MY_PASSWORD):
-        logger.error("Cannot login into twitter")
+        logger.error("Cannot login into vk")
         driver.close()
         exit(1)
     logger.info("Initialization done")
 
+def close_driver():
+    driver.close()
 
 def get_posts(post):
     image_src_list = []
@@ -63,11 +67,11 @@ def get_posts(post):
         author_info = post.find_element_by_xpath("//a[@class='author']")
         tag = author_info.get_attribute("href")
         nickname = author_info.text
-        time = post.find_element_by_class_name("post_date").text
+        time = post.find_element_by_xpath(".//div[@class='post_date']").text
     except:
         return -1
     try:
-        text = post.find_element_by_class_name("wall_post_text").text
+        text = post.find_element_by_xpath(".//div[@class='wall_text']").text
     except:
         text = "<no text>"
     """ try:
@@ -125,14 +129,19 @@ def get_vk_user(user_id: str):
     post_list = []
     logger.info(f"Start scraping of {link}")
     while scrolling:
-        page_posts = driver.find_elements_by_xpath(vk_xpath_headless["wall"])
-        for next_post in page_posts[-15:]:
+        page_posts = driver.find_element_by_xpath(vk_xpath_headless["wall"])
+        page_posts = page_posts.find_elements_by_xpath("./div")
+        for i, next_post in enumerate(page_posts[- LOWER_BOUND_SLICE:]):
+            # this is here because the last post in page_posts is actually not a post
+            scraped_post_len = len(page_posts) if len(page_posts) <  LOWER_BOUND_SLICE else LOWER_BOUND_SLICE
             post = get_posts(next_post)
-            if post == -1:
-                logger.error("Something went wrong when scraping tweets. Check scrapper configuration")
+            if post == -1 and i+1 != scraped_post_len:
+                logger.error("Something went wrong when scraping vk. Check scrapper configuration")
                 return False
+            elif i+1 == scraped_post_len:
+                break
             else:
-                post_id = post.user_tag + str(post.datetime)
+                post_id = post.text + str(post.datetime)
                 if post_id not in vk_post_ids:
                     vk_post_ids.add(post_id)
                     post_list.append(post)

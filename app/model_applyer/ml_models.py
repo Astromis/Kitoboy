@@ -56,8 +56,8 @@ class SuicidalSignalModel(BaseMlModel):
         super().__init__()
         logger.info("BERT model initialization")
         self.bert_tokenizer = AutoTokenizer.from_pretrained(config['bert_model'])
-        self.bert_model = AutoModel.from_pretrained(config['bert_model'])
-        self.model = self.model.to(config["device"])
+        bert_model = AutoModel.from_pretrained(config['bert_model'])
+        self.bert_model = bert_model.to(config["device"])
         logger.info("Initialization done")
         logger.info("Suicidal model initialization")
         self.clf = XGBClassifier()
@@ -75,12 +75,12 @@ class SuicidalSignalModel(BaseMlModel):
             if i+batch_size > texts_len:
                 batch_size = texts_len % batch_size
             text_block = texts[i:i+batch_size] 
-            t = self.tokenizer(text_block, padding=True, truncation=True, return_tensors='pt')
+            t = self.bert_tokenizer(text_block, padding=True, truncation=True, return_tensors='pt')
             with torch.no_grad():
-                model_output = self.model(**{k: v.to(self.model.device) for k, v in t.items()})
+                model_output = self.bert_model(**{k: v.to(self.bert_model.device) for k, v in t.items()})
             embeddings = model_output.last_hidden_state[:, 0, :]
             embeddings = torch.nn.functional.normalize(embeddings)
-            vectors.append(embeddings[0].cpu().numpy())
+            vectors.append(embeddings.cpu().numpy())
         
         vectors = np.vstack(vectors)
         assert vectors.shape[0] == texts_len
