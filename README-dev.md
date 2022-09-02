@@ -9,12 +9,12 @@
 
 
 Результатом выполнения команды будет созданный docker-образ проекта и использующие его docker-контейнеры: 
-    - app (flask instance)
-    - db (postgres instance)
-    - brocker (redis instance)
-    - worker (celery worker)
-    - scheduler (celery beat)
-    - flower (tasks dashboard)
+- app (flask instance)
+- db (postgres instance)
+- brocker (redis instance)
+- worker (celery worker)
+- scheduler (celery beat)
+- flower (tasks dashboard)
 
 
 check on:
