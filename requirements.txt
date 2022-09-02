@@ -35,6 +35,7 @@ itsdangerous==2.1.2
 Jinja2==3.1.2
 joblib==1.1.0
 jsonschema==4.8.0
+jupyter
 kiwisolver==1.4.4
 kombu==4.6.11
 Mako==1.2.1
@@ -52,6 +53,7 @@ pyaes==1.6.1
 pyasn1==0.4.8
 pybind11==2.10.0
 pycparser==2.21
+pydantic
 PyJWT==2.4.0
 pymorphy2==0.9.1
 pymorphy2-dicts-ru==2.4.417127.4579844
